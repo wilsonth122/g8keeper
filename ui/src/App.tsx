@@ -1,10 +1,12 @@
 import React from 'react';
-import { Router, Switch, Route } from "react-router-dom";
-import { IonApp } from '@ionic/react';
-import { useAuth0 } from "./react-auth0-spa";
+import { Router, Switch, Redirect } from "react-router-dom";
+import { IonApp, IonPage } from '@ionic/react';
 import history from "./utils/history";
 
-import Home from './pages/Home';
+import Overview from './pages/Overview';
+import Request from './pages/Request';
+import Approval from './pages/Approval';
+import Settings from './pages/Settings';
 import PrivateRoute from './components/PrivateRoute';
 
 /* Core CSS required for Ionic components to work properly */
@@ -25,18 +27,23 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import Header from './components/Header';
 
 const App: React.FC = () => {
-  const { isInitializing, isAuthenticated } = useAuth0();
-  
-  console.log(isInitializing + ", " + isAuthenticated)
   return (
     <IonApp>
-      <Router history={history}>
-        <Switch>
-          <PrivateRoute path="/" component={Home}/>
-        </Switch>
-      </Router>
+      <IonPage>
+        <Header/>
+        <Router history={history}>
+          <Switch>
+            <PrivateRoute exact path="/request" component={Request}/>
+            <PrivateRoute exact path="/approval" component={Approval}/>
+            <PrivateRoute exact path="/settings" component={Settings}/>
+            <PrivateRoute exact path="/" component={Overview}/>
+            <Redirect from="/*" to="/" />
+          </Switch>
+        </Router>
+      </IonPage>
     </IonApp>
   )
 };
