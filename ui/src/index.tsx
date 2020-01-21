@@ -28,7 +28,7 @@ const onAuthRedirectCallback = (redirectResult?: RedirectLoginResult) => {
         domain={config.domain}
         client_id={config.clientId}
         redirect_uri={window.location.origin}
-        // audience={auth0Audience}
+        audience={config.audience}
         onRedirectCallback={onAuthRedirectCallback}
       >
         <App />

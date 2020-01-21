@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Switch, Redirect } from "react-router-dom";
+import { Router, Switch, Redirect, Route } from "react-router-dom";
 import { IonApp, IonPage } from '@ionic/react';
 import history from "./utils/history";
 
@@ -28,6 +28,9 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import Header from './components/Header';
+import ExternalApi from './components/ExternalAPI';
+import Login from './pages/Login';
+import User from './pages/User';
 
 const App: React.FC = () => {
   return (
@@ -39,7 +42,10 @@ const App: React.FC = () => {
             <PrivateRoute exact path="/request" component={Request}/>
             <PrivateRoute exact path="/approval" component={Approval}/>
             <PrivateRoute exact path="/settings" component={Settings}/>
+            <PrivateRoute exact path="/user" component={User}/>
+            <PrivateRoute exact path="/external-api" component={ExternalApi}/>
             <PrivateRoute exact path="/" component={Overview}/>
+            <Route exact path="/login" component={Login}/>
             <Redirect from="/*" to="/" />
           </Switch>
         </Router>

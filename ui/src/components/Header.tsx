@@ -19,7 +19,10 @@ const Header: React.FC = () => {
     return (
         <IonHeader>
             <IonToolbar color="primary">
-                <IonTitle onClick={onTitleClick} style={{cursor: "pointer"}}>G8keeper</IonTitle>
+                
+                <IonTitle onClick={onTitleClick} style={{cursor: "pointer"}}>
+                    G8keeper
+                </IonTitle>
                 { isAuthenticated &&
                     <IonButtons slot="end">
                         <IonItem onClick={onAvatarClick} style={{cursor: "pointer"}} lines="none" color="primary">
