@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
-	"github.com/codegangsta/negroni"
+	"github.com/urfave/negroni"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 )
@@ -35,32 +35,6 @@ type JSONWebKeys struct {
 // main.go
 
 func main() {
-	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
-		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-			// Verify 'aud' claim
-			aud := "YOUR_API_IDENTIFIER"
-			checkAud := token.Claims.(jwt.MapClaims).VerifyAudience(aud, false)
-			if !checkAud {
-				return token, errors.New("Invalid audience.")
-			}
-			// Verify 'iss' claim
-			iss := "https://dev-jwdpzrq6.au.auth0.com/"
-			checkIss := token.Claims.(jwt.MapClaims).VerifyIssuer(iss, false)
-			if !checkIss {
-				return token, errors.New("Invalid issuer.")
-			}
-
-			cert, err := getPemCert(token)
-			if err != nil {
-				panic(err.Error())
-			}
-
-			result, _ := jwt.ParseRSAPublicKeyFromPEM([]byte(cert))
-			return result, nil
-		},
-		SigningMethod: jwt.SigningMethodRS256,
-	})
-
 	r := mux.NewRouter()
 
 	// This route is always accessible
