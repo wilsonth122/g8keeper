@@ -14,13 +14,11 @@ type APIConfig struct {
 }
 
 type DatabaseConfig struct {
-	Addresses         []string
-	Username          string
-	Password          string
-	AdminDatabase     string
-	AppDatabase       string
-	UserCollection    string
-	ExpenseCollection string
+	URI                     string
+	AdminDatabase           string
+	AppDatabase             string
+	UserCollection          string
+	ChangeRequestCollection string
 }
 
 type AuthConfig struct {
@@ -43,17 +41,26 @@ func New() *Config {
 			AllowedHeaders: getEnvAsSlice("ALLOWED_HEADERS", []string{""}, ","),
 		},
 		Database: DatabaseConfig{
-			Addresses:         getEnvAsSlice("DATABASE_ADDRESSES", []string{""}, ","),
-			Username:          getEnv("DATABASE_USERNAME", ""),
-			Password:          getEnv("DATABASE_PASSWORD", ""),
-			AdminDatabase:     getEnv("ADMIN_DATABASE", ""),
-			AppDatabase:       getEnv("APP_DATABASE", ""),
-			UserCollection:    getEnv("USER_COLLECTION", ""),
-			ExpenseCollection: getEnv("EXPENSE_COLLECTION", ""),
+			URI:                     getEnv("DATABASE_URI", ""),
+			AdminDatabase:           getEnv("ADMIN_DATABASE", ""),
+			AppDatabase:             getEnv("APP_DATABASE", ""),
+			UserCollection:          getEnv("USER_COLLECTION", ""),
+			ChangeRequestCollection: getEnv("CHANGE_REQUEST_COLLECTION", ""),
 		},
 		Auth: AuthConfig{
 			UserInfoURL: getEnv("USER_INFO_URL", ""),
 		},
+	}
+}
+
+// NewDatabaseConfig returns a new DatabaseConfig struct
+func NewDatabaseConfig() *DatabaseConfig {
+	return &DatabaseConfig{
+		URI:                     getEnv("DATABASE_URI", ""),
+		AdminDatabase:           getEnv("ADMIN_DATABASE", ""),
+		AppDatabase:             getEnv("APP_DATABASE", ""),
+		UserCollection:          getEnv("USER_COLLECTION", ""),
+		ChangeRequestCollection: getEnv("CHANGE_REQUEST_COLLECTION", ""),
 	}
 }
 

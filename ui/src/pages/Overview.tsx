@@ -31,7 +31,8 @@ const Overview: React.FC = () => {
   }, [items])
   
   useEffect(() => {
-    //fetchData()
+    fetchData()
+    
     const login = async() => {
       try {
         const userUrl: string = process.env.REACT_APP_USER_URL || "";

@@ -10,9 +10,9 @@ import (
 	"strings"
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
-	"github.com/urfave/negroni"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
+	"github.com/urfave/negroni"
 )
 
 type Response struct {

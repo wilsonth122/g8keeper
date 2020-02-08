@@ -13,6 +13,7 @@ require (
 	github.com/rs/cors v1.7.0
 	github.com/urfave/negroni v1.0.0
 	github.com/wilsonth122/money-tracker-api v0.0.0-20190915150418-b7083cf1054e
+	go.mongodb.org/mongo-driver v1.3.0
 	golang.org/x/crypto v0.0.0-20200117160349-530e935923ad
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22

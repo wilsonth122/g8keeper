@@ -10,13 +10,13 @@ import (
 	"github.com/rs/cors"
 	"github.com/urfave/negroni"
 
-	"github.com/wilsonth122/g8keeper/pkg/api"
-	"github.com/wilsonth122/g8keeper/pkg/auth"
 	"github.com/wilsonth122/g8keeper/pkg/config"
-	"github.com/wilsonth122/g8keeper/pkg/dao"
+	"github.com/wilsonth122/g8keeper/pkg/controller"
+	"github.com/wilsonth122/g8keeper/pkg/database"
+	"github.com/wilsonth122/g8keeper/pkg/middleware"
 )
 
-// Setup - Should be called by the init() function upon service start up.
+// Setup should be called by the init() function upon service start up.
 // Moved logic here to support multiple environments which may need custom code in the init() function to work.
 func Setup() {
 	// Load config
@@ -25,52 +25,44 @@ func Setup() {
 		log.Fatal(e)
 	}
 
-	conf := config.New()
-
-	// Connect to server
-	dao.DBConn.Addresses = conf.Database.Addresses
-	dao.DBConn.Username = conf.Database.Username
-	dao.DBConn.Password = conf.Database.Password
-	dao.DBConn.AdminDatabase = conf.Database.AdminDatabase
-	dao.DBConn.AppDatabase = conf.Database.AppDatabase
-	dao.DBConn.UserCollection = conf.Database.UserCollection
-	dao.DBConn.ExpenseCollection = conf.Database.ExpenseCollection
-	dao.DBConn.Connect()
+	conf := config.NewDatabaseConfig()
+	database.Init(database.Config{
+		conf.URI,
+		conf.AppDatabase,
+	})
 }
 
-// Start - Should be called by the main() function upon service start up.
+// Start should be called by the main() function upon service start up.
 // Moved logic here to support multiple environments which may need custom code in the main() function to work.
 func Start() {
 	conf := config.New()
 
-	// Start the websocket used for streaming expenses
-	// stream.Init()
-
-	mux := mux.NewRouter()
-
-	c := cors.New(cors.Options{
+	// Middleware
+	cors := cors.New(cors.Options{
 		AllowedOrigins: conf.API.AllowedOrigins,
 		AllowedMethods: conf.API.AllowedMethods,
 		AllowedHeaders: conf.API.AllowedHeaders,
 	})
+	auth := negroni.HandlerFunc(middleware.JwtAuthentication().HandlerWithNext)
+	user := negroni.HandlerFunc(middleware.UserMiddleware)
 
-	a := auth.JwtAuthentication()
+	negroni := negroni.New(cors, auth, user)
 
-	mux.HandleFunc("/api/user/login", api.LoginUser).Methods("GET")
-	mux.HandleFunc("/api/user/delete", api.DeleteUser).Methods("DELETE")
+	mux := mux.NewRouter()
 
-	// mux.HandleFunc("/api/stream/rfc", api.StreamAllRFC).Methods("GET")
-	// mux.HandleFunc("/api/rfc", api.AllRFC).Methods("GET")
-	// mux.HandleFunc("/api/rfc/{id}", api.GetRFC).Methods("GET")
-	// mux.HandleFunc("/api/rfc", api.CreateRFC).Methods("POST")
-	// mux.HandleFunc("/api/rfc", api.UpdateRFC).Methods("PUT")
-	// mux.HandleFunc("/api/rfc/{id}", api.DeleteRFC).Methods("DELETE")
+	mux.HandleFunc("/api/user/login", controller.LoginUser).Methods("GET")
+	mux.HandleFunc("/api/user/delete", controller.DeleteUser).Methods("DELETE")
 
-	n := negroni.New(negroni.HandlerFunc(a.HandlerWithNext), c)
-	n.UseHandler(mux)
+	mux.HandleFunc("/api/rfc", controller.AllRFCs).Methods("GET")
+	mux.HandleFunc("/api/rfc/{id}", controller.GetRFC).Methods("GET")
+	mux.HandleFunc("/api/rfc", controller.CreateRFC).Methods("POST")
+	mux.HandleFunc("/api/rfc", controller.UpdateRFC).Methods("PUT")
+	mux.HandleFunc("/api/rfc/{id}", controller.DeleteRFC).Methods("DELETE")
+
+	negroni.UseHandler(mux)
 
 	port := conf.API.Port
 	log.Printf("Origins: %s", conf.API.AllowedOrigins)
 	log.Printf("Listening on port %s", port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), n))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), negroni))
 }
