@@ -37,9 +37,8 @@ func UserMiddleware(rw http.ResponseWriter, r *http.Request, next http.HandlerFu
 
 	// Get the users current role from the database if they exist
 	conf := config.NewDatabaseConfig()
-	var dbUser model.User
-	log.Println(user)
-	if err = database.FindOne(conf.UserCollection, "email", user.Email, dbUser); err == nil {
+	dbUser := model.User{}
+	if err = database.Find(conf.UserCollection, "email", user.Email, &dbUser); err == nil {
 		// Update user to match database
 		user = dbUser
 	} else if err != nil && err != mongo.ErrNoDocuments {
@@ -47,9 +46,7 @@ func UserMiddleware(rw http.ResponseWriter, r *http.Request, next http.HandlerFu
 		u.RespondWithError(rw, http.StatusInternalServerError, "Please try again")
 		return
 	}
-	log.Println(err)
-	log.Println(user)
-	log.Println(dbUser)
+
 	// Add user info to calling chain
 	ctx := context.WithValue(r.Context(), "user", user)
 	r = r.WithContext(ctx)

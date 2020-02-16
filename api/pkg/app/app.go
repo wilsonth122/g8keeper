@@ -51,13 +51,13 @@ func Start() {
 	mux := mux.NewRouter()
 
 	mux.HandleFunc("/api/user/login", controller.LoginUser).Methods("GET")
+	mux.HandleFunc("/api/user/update", controller.UpdateUser).Methods("POST")
 	mux.HandleFunc("/api/user/delete", controller.DeleteUser).Methods("DELETE")
 
 	mux.HandleFunc("/api/rfc", controller.AllRFCs).Methods("GET")
 	mux.HandleFunc("/api/rfc/{id}", controller.GetRFC).Methods("GET")
 	mux.HandleFunc("/api/rfc", controller.CreateRFC).Methods("POST")
 	mux.HandleFunc("/api/rfc", controller.UpdateRFC).Methods("PUT")
-	mux.HandleFunc("/api/rfc/{id}", controller.DeleteRFC).Methods("DELETE")
 
 	negroni.UseHandler(mux)
 

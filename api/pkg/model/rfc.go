@@ -4,9 +4,10 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-// ChangeRequest struct
-type ChangeRequest struct {
+// RFC (Request for Change) struct
+type RFC struct {
 	ID               bson.ObjectId `bson:"_id" json:"id"`
+	OwnerID          string        `bson:"ownerID" json:"ownerID"`
 	Status           Status        `bson:"status" json:"status"`
 	Title            string        `bson:"title" json:"title"`
 	Description      string        `bson:"description" json:"description"`
