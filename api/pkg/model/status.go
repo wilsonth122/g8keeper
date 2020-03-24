@@ -1,5 +1,7 @@
 package model
 
+import "encoding/json"
+
 // Status Enum
 type Status int
 
@@ -25,4 +27,10 @@ func (status Status) String() string {
 	}
 
 	return names[status]
+}
+
+// MarshalJSON is called when transforming this enum into JSON format.
+// This is required to return a string representation of the enum rather than an int.
+func (status Status) MarshalJSON() ([]byte, error) {
+	return json.Marshal(status.String())
 }

@@ -50,7 +50,7 @@ func Start() {
 
 	mux := mux.NewRouter()
 
-	mux.HandleFunc("/api/user/login", controller.LoginUser).Methods("GET")
+	mux.HandleFunc("/api/user", controller.GetUser).Methods("GET")
 	mux.HandleFunc("/api/user/update", controller.UpdateUser).Methods("POST")
 	mux.HandleFunc("/api/user/delete", controller.DeleteUser).Methods("DELETE")
 

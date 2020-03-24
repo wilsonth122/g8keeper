@@ -20,7 +20,6 @@ func AllRFCs(w http.ResponseWriter, r *http.Request) {
 
 	// Get all RFC's from the DB
 	dbRFC := model.RFC{}
-	// TODO: pagination from a Mongo DB
 	// rfcs, err := database.FindAll(conf.RFCCollection, &dbRFC)
 	// if err != nil {
 	// 	log.Println(err)

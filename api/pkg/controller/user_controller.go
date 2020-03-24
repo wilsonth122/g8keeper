@@ -12,8 +12,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-// LoginUser returns a users details
-func LoginUser(w http.ResponseWriter, r *http.Request) {
+// GetUser returns a users details from the database.
+// If the user doesn't exist, they are added to the database.
+func GetUser(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	user, ok := r.Context().Value("user").(model.User)

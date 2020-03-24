@@ -12,7 +12,8 @@ const Header: React.FC = () => {
         history.push("/")
     }
 
-    const onAvatarClick = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    const onAvatarClick = (e: any) => {
+        console.log(e)
         setPopoverEvent(e.nativeEvent)
     }
 
